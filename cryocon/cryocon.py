@@ -116,3 +116,13 @@ class control():
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
+
+    def status_range(self):
+        """ Requests the status of the Cryocon PID range setting
+                :returns string: The status of the Cryocon range setting loop: LOW, MID, HI"""
+        try:
+            self.__adapter.select(self.__gpib)
+            return str(self.__adapter.query('LOOP 1:RANGE?'))
+
+        except:
+            print"ERROR no communication possible, check if the connection has been opened with open()"
