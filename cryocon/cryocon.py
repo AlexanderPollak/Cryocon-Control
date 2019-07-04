@@ -1,5 +1,5 @@
 import serial,time,numpy,re,time
-from plx_gpib_ethernet import *
+
 
 
 class control():
@@ -118,10 +118,32 @@ class control():
             print"ERROR no communication possible, check if the connection has been opened with open()"
 
     def status_range(self):
-        """ Requests the status of the Cryocon PID range setting
-                :returns string: The status of the Cryocon range setting loop: LOW, MID, HI"""
+        """ Requests the status of the Cryocon PID output power setting
+                :returns string: The status of the Cryocon output power setting: LOW, MID, HI"""
         try:
             self.__adapter.select(self.__gpib)
+            return str(self.__adapter.query('LOOP 1:RANGE?'))
+
+        except:
+            print"ERROR no communication possible, check if the connection has been opened with open()"
+
+    def set_range_mid(self):
+        """ Set the the Cryocon PID output power to MID (5.0W)
+                :returns string: The status of the Cryocon output power setting: LOW, MID, HI"""
+        try:
+            self.__adapter.select(self.__gpib)
+            self.__adapter.write('LOOP 1:RANGE MID')
+            return str(self.__adapter.query('LOOP 1:RANGE?'))
+
+        except:
+            print"ERROR no communication possible, check if the connection has been opened with open()"
+
+    def set_range_low(self):
+        """ Set the the Cryocon PID output power to LOW (0.5W)
+                :returns string: The status of the Cryocon output power setting: LOW, MID, HI"""
+        try:
+            self.__adapter.select(self.__gpib)
+            self.__adapter.write('LOOP 1:RANGE LOW')
             return str(self.__adapter.query('LOOP 1:RANGE?'))
 
         except:
