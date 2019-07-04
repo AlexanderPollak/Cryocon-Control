@@ -1,4 +1,4 @@
-import serial,time
+import serial,time,numpy
 from plx_gpib_ethernet import *
 
 
@@ -31,7 +31,7 @@ class control():
     def send_cmd(self,cmd):
         """ Send command to the GPIB device
                 :param cmd: string which gets send to device'
-                :returns answer from device in string format """
+                :returns unicode: response of device """
         try:
             self.__adapter.select(self.__gpib)
             return self.__adapter.query(cmd)
@@ -41,10 +41,11 @@ class control():
 
     def disable(self):
         """ Disable the temperature stabilisation PID loop
-                :returns The status of the Cryocon PID loop """
+                :returns string: The status of the Cryocon PID loop """
         try:
             self.__adapter.select(self.__gpib)
-            return self.__adapter.query('STOP')
+            self.__adapter.query('STOP')
+            return srt(self.__adapter.query('CONT?'))
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
@@ -52,20 +53,21 @@ class control():
 
     def enable(self):
         """ Enable the temperature stabilisation PID loop
-                :returns The status of the Cryocon PID loop """
+                :returns string: The status of the Cryocon PID loop """
         try:
             self.__adapter.select(self.__gpib)
-            return self.__adapter.query('CONT')
+            self.__adapter.query('CONT')
+            return str(self.__adapter.query('CONT?'))
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
 
     def status(self):
         """ Requests the status of the Cryocon PID loop
-                :returns The status of the Cryocon PID loop: ON or OFF"""
+                :returns string: The status of the Cryocon PID loop: ON or OFF"""
         try:
             self.__adapter.select(self.__gpib)
-            return self.__adapter.query('CONT?')
+            return srt(self.__adapter.query('CONT?'))
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
@@ -73,30 +75,31 @@ class control():
     def set_setpoint(self,temp):
         """ Set the setpoint temperature of the control loop
                 :param temp: setpoint temperature in Kelvin eg.: 15.4'
-                :returns The setpoint temperature in Kelvin"""
+                :returns float: The setpoint temperature in Kelvin"""
         try:
             self.__adapter.select(self.__gpib)
-            return self.__adapter.query('LOOP 1:SETPT '+temp)
+            self.__adapter.query('LOOP 1:SETPT ' + temp)
+            return numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('LOOP 1:SETPT?')))
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
 
     def read_setpoint(self):
         """ Requests the setpoint temperature of the control loop
-                :returns The setpeoint temperature in Kelvin """
+                :returns float: The setpeoint temperature in Kelvin """
         try:
             self.__adapter.select(self.__gpib)
-            return self.__adapter.query('LOOP 1:SETPT?')
+            return numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('LOOP 1:SETPT?')))
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
 
     def read_sensor_temperature(self):
         """ Requests the temperature value of the sensor
-                :returns The actual temperature value of the sensor in Kelvin """
+                :returns float: The actual temperature value of the sensor in Kelvin """
         try:
             self.__adapter.select(self.__gpib)
-            return self.__adapter.query('INPUT? A')
+            return  numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('INPUT? A')))
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
@@ -104,10 +107,10 @@ class control():
 
     def read_frimware_version(self):
         """ Request the firmware version of the Cryocon temperature controller
-                :returns firmware version  """
+                :returns float: firmware version  """
         try:
             self.__adapter.select(self.__gpib)
-            return self.__adapter.query('SYSTEM:FWREV?')
+            return numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('SYSTEM:FWREV?')))
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
