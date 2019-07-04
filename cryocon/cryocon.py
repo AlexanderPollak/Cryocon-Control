@@ -1,5 +1,5 @@
 import serial,time,numpy,re,time
-
+from plx_gpib_ethernet.plx_gpib_ethernet import *
 
 
 class control():
