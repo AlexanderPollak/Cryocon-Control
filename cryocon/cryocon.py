@@ -37,15 +37,14 @@ class control():
             return self.__adapter.query(cmd)
 
         except:
-            print"ERROR no communication possible, check if the connection has been opened with open()"
+            print"ERROR no communication possible, check if the connection has been opened with open()\r Or device did not send a reply!!!"
 
     def disable(self):
         """ Disable the temperature stabilisation PID loop
                 :returns string: The status of the Cryocon PID loop """
         try:
             self.__adapter.select(self.__gpib)
-            self.__adapter.query('STOP')
-            time.sleep(3)
+            self.__adapter.write('STOP')
             return str(self.__adapter.query('CONT?'))
 
         except:
@@ -57,8 +56,7 @@ class control():
                 :returns string: The status of the Cryocon PID loop """
         try:
             self.__adapter.select(self.__gpib)
-            self.__adapter.query('CONT')
-            time.sleep(3)
+            self.__adapter.write('CONT')
             return str(self.__adapter.query('CONT?'))
 
         except:
@@ -80,8 +78,7 @@ class control():
                 :returns float: The setpoint temperature in Kelvin"""
         try:
             self.__adapter.select(self.__gpib)
-            self.__adapter.query('LOOP 1:SETPT ' + str(temp))
-            stime.sleep(3)
+            self.__adapter.write('LOOP 1:SETPT ' + str(temp))
             payload=self.__adapter.query('LOOP 1:SETPT?')
             return numpy.float64(re.findall("\d+\.\d+", payload))[0]
 
