@@ -1,4 +1,4 @@
-import serial,time,numpy
+import serial,time,numpy,re
 from plx_gpib_ethernet import *
 
 
@@ -45,7 +45,7 @@ class control():
         try:
             self.__adapter.select(self.__gpib)
             self.__adapter.query('STOP')
-            return srt(self.__adapter.query('CONT?'))
+            return str(self.__adapter.query('CONT?'))
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
@@ -67,7 +67,7 @@ class control():
                 :returns string: The status of the Cryocon PID loop: ON or OFF"""
         try:
             self.__adapter.select(self.__gpib)
-            return srt(self.__adapter.query('CONT?'))
+            return str(self.__adapter.query('CONT?'))
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
