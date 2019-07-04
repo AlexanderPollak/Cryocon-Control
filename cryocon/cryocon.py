@@ -45,7 +45,7 @@ class control():
         try:
             self.__adapter.select(self.__gpib)
             self.__adapter.query('STOP')
-            time.sleep(1)
+            time.sleep(3)
             return str(self.__adapter.query('CONT?'))
 
         except:
@@ -58,7 +58,7 @@ class control():
         try:
             self.__adapter.select(self.__gpib)
             self.__adapter.query('CONT')
-            time.sleep(1)
+            time.sleep(3)
             return str(self.__adapter.query('CONT?'))
 
         except:
@@ -81,7 +81,7 @@ class control():
         try:
             self.__adapter.select(self.__gpib)
             self.__adapter.query('LOOP 1:SETPT ' + str(temp))
-            stime.sleep(1)
+            stime.sleep(3)
             payload=self.__adapter.query('LOOP 1:SETPT?')
             return numpy.float64(re.findall("\d+\.\d+", payload))[0]
 
