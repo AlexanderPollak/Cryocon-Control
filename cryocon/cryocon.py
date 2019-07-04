@@ -1,4 +1,4 @@
-import serial,time,numpy,re
+import serial,time,numpy,re,time
 from plx_gpib_ethernet import *
 
 
@@ -45,7 +45,7 @@ class control():
         try:
             self.__adapter.select(self.__gpib)
             self.__adapter.query('STOP')
-            self.__adapter.select(self.__gpib)
+            time.sleep(1)
             return str(self.__adapter.query('CONT?'))
 
         except:
@@ -58,7 +58,7 @@ class control():
         try:
             self.__adapter.select(self.__gpib)
             self.__adapter.query('CONT')
-            self.__adapter.select(self.__gpib)
+            time.sleep(1)
             return str(self.__adapter.query('CONT?'))
 
         except:
@@ -81,7 +81,7 @@ class control():
         try:
             self.__adapter.select(self.__gpib)
             self.__adapter.query('LOOP 1:SETPT ' + str(temp))
-            self.__adapter.select(self.__gpib)
+            stime.sleep(1)
             payload=self.__adapter.query('LOOP 1:SETPT?')
             return numpy.float64(re.findall("\d+\.\d+", payload))[0]
 
