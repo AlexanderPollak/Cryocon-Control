@@ -33,7 +33,7 @@ class control():
                 :param cmd: string which gets send to device'
                 :returns answer from device in string format """
         try:
-            self.__adapter.select(gpib)
+            self.__adapter.select(self.__gpib)
             return self.__adapter.query(cmd)
 
         except:
@@ -43,7 +43,7 @@ class control():
         """ Disable the temperature stabilisation PID loop
                 :returns The status of the Cryocon PID loop """
         try:
-            self.__adapter.select(gpib)
+            self.__adapter.select(self.__gpib)
             return self.__adapter.query('STOP')
 
         except:
@@ -54,7 +54,7 @@ class control():
         """ Enable the temperature stabilisation PID loop
                 :returns The status of the Cryocon PID loop """
         try:
-            self.__adapter.select(gpib)
+            self.__adapter.select(self.__gpib)
             return self.__adapter.query('CONT')
 
         except:
@@ -64,7 +64,7 @@ class control():
         """ Requests the status of the Cryocon PID loop
                 :returns The status of the Cryocon PID loop: ON or OFF"""
         try:
-            self.__adapter.select(gpib)
+            self.__adapter.select(self.__gpib)
             return self.__adapter.query('CONT?')
 
         except:
@@ -75,7 +75,7 @@ class control():
                 :param temp: setpoint temperature in Kelvin eg.: 15.4'
                 :returns The setpoint temperature in Kelvin"""
         try:
-            self.__adapter.select(gpib)
+            self.__adapter.select(self.__gpib)
             return self.__adapter.query('LOOP 1:SETPT '+temp)
 
         except:
@@ -85,7 +85,7 @@ class control():
         """ Requests the setpoint temperature of the control loop
                 :returns The setpeoint temperature in Kelvin """
         try:
-            self.__adapter.select(gpib)
+            self.__adapter.select(self.__gpib)
             return self.__adapter.query('LOOP 1:SETPT?')
 
         except:
@@ -95,7 +95,7 @@ class control():
         """ Requests the temperature value of the sensor
                 :returns The actual temperature value of the sensor in Kelvin """
         try:
-            self.__adapter.select(gpib)
+            self.__adapter.select(self.__gpib)
             return self.__adapter.query('INPUT? A')
 
         except:
@@ -106,7 +106,7 @@ class control():
         """ Request the firmware version of the Cryocon temperature controller
                 :returns firmware version  """
         try:
-            self.__adapter.select(gpib)
+            self.__adapter.select(self.__gpib)
             return self.__adapter.query('SYSTEM:FWREV?')
 
         except:
