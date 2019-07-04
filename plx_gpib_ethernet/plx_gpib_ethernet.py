@@ -2,12 +2,11 @@ import socket
 
 
 class PrologixGPIBEthernet:
+    PORT=1234
 
-    def __init__(self, host,socket_port=1234, timeout=1):
+    def __init__(self, host, timeout=1):
         self.host = host
-        self.PORT = socket_port
         self.timeout = timeout
-
         self.socket = socket.socket(socket.AF_INET,
                                     socket.SOCK_STREAM,
                                     socket.IPPROTO_TCP)
