@@ -1,5 +1,5 @@
 import serial,time
-
+from plx_gpib_ethernet import *
 
 
 
@@ -22,52 +22,37 @@ class control():
     """This class implements the methods to control the Cryocon temperature controller"""
     def __init__(self):
         ''' Constructor for this class. '''
-        self.__port = 0
-        try:
-            # Store configuration file values
-        except:
-            #Keep preset values
+        self.__adapter = 0
 
     def __del__(self):
         ''' Destructor for this class. '''
-        if self.__port !=0:
+        if self.__is_open:
             self.close()
 
 
-    def open(self, port='/dev/ttyUSB0', baud=19200):
-        """ Open serial port for communication
-                :param port: path to serial port. Default='/dev/ttyUSB0'
-                :param baud: defines the baud rate. Default=19200
+    def open(self, ip='169.254.128.218',socket_port=1235, gpib=12):
+        """ Open connection to GPIB adapter and creates a socket
+                :param ip: IP address of the GPIB adapter. Default='169.254.128.218'
+                :param gpib: GPIB address of the Cryocon Controller. Default=12
+                :param socket_port: Defines the socket port at which the GPIB adapter gets linked to. Default=1235
                 :returns Boolean value True or False """
-        self.__port = serial.Serial(port,baud, timeout=0.05)
-        self.sensor = sensor(self.__port)
-        self.error = error(self.__port)
-        self.compressor = compressor(self.__port, self.__comp_time_disabled)
-        return self.__port.isOpen
+        self.__adapter = PrologixGPIBEthernet(ip,socket_port)
+        self.__GPIB = gpib
+        self.__is_open = self.__adapter.connect()
+        self.__adapter.select(gpib)
+        return self.__is_open
 
     def close(self):
-        """ Close serial port """
-        self.__port.close()
-        self.sensor.__del__()
-        self.error.__del__()
-        self.__comp_time_disabled = self.compressor.__del__()
-        try:
-            tmp = open('tmp.txt', 'w+')
-            tmp.write(str(self.__comp_time_disabled))
-            tmp.close()
-            # Store configuration file values
-        except:
-            print'ERROR in saving the temp file!'
-        return not self.__port.isOpen
+        """ Close socket """
+        self.__adapter.close()
 
     def send_cmd(self,cmd):
         """ Send string via serial connection
-                :param cmd: string which gets send via serial link'
-                :returns answer from controller in string format """
+                :param cmd: string which gets send to device'
+                :returns answer from device in string format """
         try:
-            self.__port.write(cmd)
-            time.sleep(0.1)
-            return self.__port.read(1024)
+            return self.__adapter.query(cmd)
+
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
 

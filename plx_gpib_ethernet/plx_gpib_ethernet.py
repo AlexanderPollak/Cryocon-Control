@@ -2,10 +2,10 @@ import socket
 
 
 class PrologixGPIBEthernet:
-    PORT = 1234
 
-    def __init__(self, host, timeout=1):
+    def __init__(self, host,socket_port=1234, timeout=1):
         self.host = host
+        self.PORT = socket_port
         self.timeout = timeout
 
         self.socket = socket.socket(socket.AF_INET,
@@ -17,9 +17,11 @@ class PrologixGPIBEthernet:
         self.socket.connect((self.host, self.PORT))
 
         self._setup()
+        return True
 
     def close(self):
         self.socket.close()
+        return True
 
     def select(self, addr):
         self._send('++addr %i' % int(addr))
