@@ -30,13 +30,12 @@ class control():
             self.close()
 
 
-    def open(self, ip='169.254.128.218',socket_port=1235, gpib=12):
+    def open(self, ip='169.254.128.218', gpib=12):
         """ Open connection to GPIB adapter and creates a socket
                 :param ip: IP address of the GPIB adapter. Default='169.254.128.218'
                 :param gpib: GPIB address of the Cryocon Controller. Default=12
-                :param socket_port: Defines the socket port at which the GPIB adapter gets linked to. Default=1235
                 :returns Boolean value True or False """
-        self.__adapter = PrologixGPIBEthernet(ip,socket_port)
+        self.__adapter = PrologixGPIBEthernet(ip)
         self.__GPIB = gpib
         self.__is_open = self.__adapter.connect()
         self.__adapter.select(gpib)
