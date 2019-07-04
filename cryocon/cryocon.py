@@ -165,7 +165,7 @@ class control():
             print"ERROR no communication possible, check if the connection has been opened with open()"
 
 
-    def read_frimware_version(self):
+    def read_firmware_version(self):
         """ Request the firmware version of the Cryocon temperature controller
                 :returns float: firmware version  """
         try:
