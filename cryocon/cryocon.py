@@ -45,6 +45,7 @@ class control():
         try:
             self.__adapter.select(self.__gpib)
             self.__adapter.query('STOP')
+            self.__adapter.select(self.__gpib)
             return str(self.__adapter.query('CONT?'))
 
         except:
@@ -57,6 +58,7 @@ class control():
         try:
             self.__adapter.select(self.__gpib)
             self.__adapter.query('CONT')
+            self.__adapter.select(self.__gpib)
             return str(self.__adapter.query('CONT?'))
 
         except:
@@ -78,8 +80,10 @@ class control():
                 :returns float: The setpoint temperature in Kelvin"""
         try:
             self.__adapter.select(self.__gpib)
-            self.__adapter.query('LOOP 1:SETPT ' + temp)
-            return numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('LOOP 1:SETPT?')))
+            self.__adapter.query('LOOP 1:SETPT ' + str(temp))
+            self.__adapter.select(self.__gpib)
+            payload=self.__adapter.query('LOOP 1:SETPT?')
+            return numpy.float64(re.findall("\d+\.\d+", payload))[0]
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
@@ -89,7 +93,8 @@ class control():
                 :returns float: The setpeoint temperature in Kelvin """
         try:
             self.__adapter.select(self.__gpib)
-            return numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('LOOP 1:SETPT?')))
+            payload=self.__adapter.query('LOOP 1:SETPT?')
+            return numpy.float64(re.findall("\d+\.\d+", payload))[0]
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
@@ -99,7 +104,7 @@ class control():
                 :returns float: The actual temperature value of the sensor in Kelvin """
         try:
             self.__adapter.select(self.__gpib)
-            return  numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('INPUT? A')))
+            return  numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('INPUT? A')))[0]
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
@@ -110,7 +115,7 @@ class control():
                 :returns float: firmware version  """
         try:
             self.__adapter.select(self.__gpib)
-            return numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('SYSTEM:FWREV?')))
+            return numpy.float64(re.findall("\d+\.\d+", self.__adapter.query('SYSTEM:FWREV?')))[0]
 
         except:
             print"ERROR no communication possible, check if the connection has been opened with open()"
